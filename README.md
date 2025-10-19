@@ -47,6 +47,7 @@ A full-stack intelligent parking management solution with real-time slot availab
 
 ## Project Structure
 
+```bash
 smart-parking-system/
 ├── frontend/ # React Application
 │ ├── public/ # Static assets
@@ -77,6 +78,7 @@ smart-parking-system/
 │ └── .env.example
 │
 └── README.md
+```
 
 ## Prerequisites
 
