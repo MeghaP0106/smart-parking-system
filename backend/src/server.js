@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDatabase = require('./config/database');
+const { updateExpiredReservations } = require('./utils/updateReservationStatus'); // ADD THIS LINE
 
 // Load environment variables
 dotenv.config();
@@ -40,4 +41,9 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  
+  // ADD THESE LINES: Run status updater every 5 minutes
+  updateExpiredReservations(); // Run immediately on startup
+  setInterval(updateExpiredReservations, 5 * 60 * 1000); // Run every 5 minutes
+  console.log('Automatic reservation status updater started');
 });
