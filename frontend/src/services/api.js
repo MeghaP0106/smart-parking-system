@@ -76,6 +76,21 @@ export const createReservation = async (reservationData) => {
   return response.data;
 };
 
+// ... existing code ...
+
+// Area APIs
+export const getAllAreas = async () => {
+  const response = await api.get('/locations/areas');
+  return response.data;
+};
+
+export const getLocationsByArea = async (area) => {
+  const response = await api.get(`/locations/by-area/${area}`);
+  return response.data;
+};
+
+// ... rest of existing code ...
+
 export const getUserReservations = async () => {
   const response = await api.get('/reservations/user');
   return response.data;

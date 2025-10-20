@@ -82,9 +82,9 @@ const TicketConfirmation = ({ reservation }) => {
           <div className="pt-4 border-t border-dark-border">
             <p className="text-sm text-silver-dark mb-2">User Details</p>
             <div className="space-y-1 text-silver">
-              <p>Name: {reservation.user.name}</p>
-              <p>Phone: {reservation.user.phone}</p>
-              <p>License Plate: {reservation.user.licensePlate}</p>
+              <p>Name: {reservation.useName}</p>
+              <p>Phone: {reservation.usePhone}</p>
+              <p>License Plate: {reservation.licensePlate}</p>
             </div>
           </div>
         </div>

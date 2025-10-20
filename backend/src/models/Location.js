@@ -11,6 +11,11 @@ const locationSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide an address'],
     },
+    area: {
+      type: String,
+      required: [true, 'Please provide an area'],
+      trim: true,
+    },
     coordinates: {
       type: {
         type: String,
@@ -57,5 +62,6 @@ const locationSchema = new mongoose.Schema(
 );
 
 locationSchema.index({ coordinates: '2dsphere' });
+locationSchema.index({ area: 1 });
 
 module.exports = mongoose.model('Location', locationSchema);

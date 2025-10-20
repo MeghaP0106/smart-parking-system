@@ -20,6 +20,22 @@ const connectDB = async () => {
   }
 };
 
+// Helper function to generate random coordinates within a radius
+const generateNearbyCoordinates = (centerLat, centerLon, radiusKm) => {
+  const radiusInDegrees = radiusKm / 111.32;
+  const u = Math.random();
+  const v = Math.random();
+  const w = radiusInDegrees * Math.sqrt(u);
+  const t = 2 * Math.PI * v;
+  const x = w * Math.cos(t);
+  const y = w * Math.sin(t);
+  
+  return {
+    latitude: centerLat + x,
+    longitude: centerLon + y
+  };
+};
+
 const seedData = async () => {
   try {
     // Clear existing data
@@ -62,10 +78,11 @@ const seedData = async () => {
     const locations = await Location.create([
       {
         name: 'Mysore Palace Parking',
+        area: 'Chamrajpura',
         address: 'Sayyaji Rao Road, Agrahara, Chamrajpura, Mysuru, Karnataka 570001',
         coordinates: {
           type: 'Point',
-          coordinates: [76.6552, 12.3052], // [longitude, latitude]
+          coordinates: [76.6552, 12.3052],
         },
         totalSlots: 100,
         availableSlots: 85,
@@ -77,6 +94,7 @@ const seedData = async () => {
       },
       {
         name: 'Devaraja Market Parking',
+        area: 'Devaraja Mohalla',
         address: 'Devaraja Mohalla, Mysuru, Karnataka 570001',
         coordinates: {
           type: 'Point',
@@ -92,6 +110,7 @@ const seedData = async () => {
       },
       {
         name: 'Mall of Mysore Parking',
+        area: 'MG Road',
         address: 'MG Road, Mysuru, Karnataka 570001',
         coordinates: {
           type: 'Point',
@@ -107,6 +126,7 @@ const seedData = async () => {
       },
       {
         name: 'Railway Station Parking',
+        area: 'Railway Station',
         address: 'Irwin Road, Mysuru, Karnataka 570001',
         coordinates: {
           type: 'Point',
@@ -122,6 +142,7 @@ const seedData = async () => {
       },
       {
         name: 'Chamundi Hills Base Parking',
+        area: 'Chamundi Hills',
         address: 'Chamundi Hill Road, Mysuru, Karnataka 570010',
         coordinates: {
           type: 'Point',
@@ -160,7 +181,7 @@ const seedData = async () => {
           const currentOccupied = slots.filter(s => s.status !== 'available').length;
           
           if (currentOccupied < occupiedCount) {
-            status = slotStatuses[Math.floor(Math.random() * 2) + 1]; // occupied or reserved
+            status = slotStatuses[Math.floor(Math.random() * 2) + 1];
           }
 
           const pricePerHour = type === 'electric' ? 75 : type === 'handicap' ? 30 : 50;
@@ -180,7 +201,7 @@ const seedData = async () => {
       console.log(`Created ${slots.length} parking slots for ${location.name}`);
     }
 
-    // Create some sample reservations using .save() to trigger pre-save hook
+    // Create some sample reservations
     const mysurePalaceLocation = locations[0];
     const mysurePalaceSlots = await ParkingSlot.find({
       location: mysurePalaceLocation._id,
@@ -192,10 +213,9 @@ const seedData = async () => {
         const startTime = new Date();
         startTime.setHours(startTime.getHours() + i);
         
-        const duration = Math.floor(Math.random() * 4) + 1; // 1-4 hours
+        const duration = Math.floor(Math.random() * 4) + 1;
         const endTime = new Date(startTime.getTime() + duration * 60 * 60 * 1000);
         
-        // Create reservation instance and save (to trigger pre-save hook)
         const reservation = new Reservation({
           user: users[i % 2]._id,
           location: mysurePalaceLocation._id,
@@ -210,7 +230,7 @@ const seedData = async () => {
           status: 'active',
         });
 
-        await reservation.save(); // This will trigger the pre-save hook
+        await reservation.save();
         console.log(`Created reservation ${reservation.reservationId}`);
       }
       console.log('Created sample reservations');
@@ -218,7 +238,7 @@ const seedData = async () => {
 
     console.log('\n✅ Database seeded successfully!');
     console.log('\nTest Credentials:');
-    console.log('─────────────────────────────────────');
+    console.log('─────────────────────────────────────────');
     console.log('User 1:');
     console.log('  Email: john@example.com');
     console.log('  Password: password123');
@@ -228,7 +248,7 @@ const seedData = async () => {
     console.log('\nAdmin:');
     console.log('  Email: admin@smartpark.com');
     console.log('  Password: admin123');
-    console.log('─────────────────────────────────────\n');
+    console.log('─────────────────────────────────────────\n');
 
     process.exit(0);
   } catch (error) {

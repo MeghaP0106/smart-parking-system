@@ -3,6 +3,36 @@ const router = express.Router();
 const Location = require('../models/Location');
 const { protect } = require('../middleware/auth');
 
+// @route   GET /api/locations/areas
+// @desc    Get all unique areas
+// @access  Private
+router.get('/areas', protect, async (req, res) => {
+  try {
+    const areas = await Location.distinct('area', { isActive: true });
+    res.json(areas.sort());
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// @route   GET /api/locations/by-area/:area
+// @desc    Get locations by area
+// @access  Private
+router.get('/by-area/:area', protect, async (req, res) => {
+  try {
+    const locations = await Location.find({
+      area: req.params.area,
+      isActive: true,
+    }).sort({ name: 1 });
+
+    res.json(locations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // @route   GET /api/locations
 // @desc    Get all locations
 // @access  Private
