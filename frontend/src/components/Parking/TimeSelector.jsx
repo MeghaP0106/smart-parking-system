@@ -10,10 +10,8 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
 
   const durations = [1, 2, 3, 4, 5, 6];
 
-  // Initialize with current date and time
   useEffect(() => {
     const now = new Date();
-    // Add 1 hour to current time as minimum start time
     now.setHours(now.getHours() + 1);
     
     const year = now.getFullYear();
@@ -27,8 +25,6 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
     
     setStartDate(dateStr);
     setStartTime(timeStr);
-    
-    // Initial calculation
     updateTimeSelection(1, dateStr, timeStr);
   }, []);
 
@@ -42,7 +38,6 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
     setStartDate(date);
     setError('');
     
-    // Validate date
     const selectedDate = new Date(date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -60,7 +55,6 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
     setStartTime(time);
     setError('');
     
-    // Validate time if date is today
     if (startDate) {
       const selectedDateTime = new Date(`${startDate}T${time}`);
       const now = new Date();
@@ -101,7 +95,6 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
     }
   };
 
-  // Get minimum date (today)
   const getMinDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -110,7 +103,6 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
     return `${year}-${month}-${day}`;
   };
 
-  // Get maximum date (30 days from now)
   const getMaxDate = () => {
     const maxDate = new Date();
     maxDate.setDate(maxDate.getDate() + 30);
@@ -120,7 +112,6 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
     return `${year}-${month}-${day}`;
   };
 
-  // Format date for display
   const formatDisplayDate = (dateStr) => {
     if (!dateStr) return '';
     try {
@@ -136,7 +127,6 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
     }
   };
 
-  // Format time for display
   const formatDisplayTime = (timeStr) => {
     if (!timeStr) return '';
     try {
@@ -159,7 +149,6 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
 
       <AnimatedBorder className="bg-dark-card rounded-xl p-6">
         <div className="space-y-6">
-          {/* Error Message */}
           {error && (
             <div className="bg-red-900/20 border border-red-700 rounded-lg p-4 flex items-start space-x-3">
               <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
@@ -173,21 +162,24 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
               <Calendar className="w-5 h-5" />
               <span className="font-medium">Select Date</span>
             </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={handleDateChange}
-              min={getMinDate()}
-              max={getMaxDate()}
-              className="w-full bg-dark-bg border-2 border-dark-border rounded-lg px-4 py-3 text-silver-light focus:outline-none focus:border-silver transition-colors text-base cursor-pointer"
-              style={{
-                colorScheme: 'dark',
-              }}
-            />
+            <div className="relative">
+              <input
+                type="date"
+                value={startDate}
+                onChange={handleDateChange}
+                min={getMinDate()}
+                max={getMaxDate()}
+                className="w-full bg-dark-bg border-2 border-dark-border rounded-lg px-4 py-3 text-silver-light focus:outline-none focus:border-silver transition-colors text-lg"
+                style={{
+                  colorScheme: 'dark',
+                }}
+              />
+            </div>
             {startDate && !error && (
-              <p className="mt-2 text-sm text-silver">
-                 {formatDisplayDate(startDate)}
-              </p>
+              <div className="mt-3 bg-dark-bg rounded-lg p-3 border border-dark-border">
+                <p className="text-sm text-silver-dark">Selected Date:</p>
+                <p className="text-silver-light font-medium"> {formatDisplayDate(startDate)}</p>
+              </div>
             )}
           </div>
 
@@ -197,19 +189,22 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
               <Clock className="w-5 h-5" />
               <span className="font-medium">Select Time</span>
             </label>
-            <input
-              type="time"
-              value={startTime}
-              onChange={handleTimeChange}
-              className="w-full bg-dark-bg border-2 border-dark-border rounded-lg px-4 py-3 text-silver-light focus:outline-none focus:border-silver transition-colors text-base cursor-pointer"
-              style={{
-                colorScheme: 'dark',
-              }}
-            />
+            <div className="relative">
+              <input
+                type="time"
+                value={startTime}
+                onChange={handleTimeChange}
+                className="w-full bg-dark-bg border-2 border-dark-border rounded-lg px-4 py-3 text-silver-light focus:outline-none focus:border-silver transition-colors text-lg"
+                style={{
+                  colorScheme: 'dark',
+                }}
+              />
+            </div>
             {startTime && !error && (
-              <p className="mt-2 text-sm text-silver">
-                 {formatDisplayTime(startTime)}
-              </p>
+              <div className="mt-3 bg-dark-bg rounded-lg p-3 border border-dark-border">
+                <p className="text-sm text-silver-dark">Selected Time:</p>
+                <p className="text-silver-light font-medium"> {formatDisplayTime(startTime)}</p>
+              </div>
             )}
           </div>
 
@@ -225,7 +220,7 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
                   key={hours}
                   type="button"
                   onClick={() => handleDurationChange(hours)}
-                  className={`py-3 px-4 rounded-lg border-2 font-semibold transition-all ${
+                  className={`py-4 px-4 rounded-lg border-2 font-bold text-lg transition-all ${
                     duration === hours
                       ? 'bg-silver border-silver-light text-dark-bg shadow-lg scale-105'
                       : 'bg-dark-bg border-dark-border text-silver hover:border-silver hover:scale-105'
@@ -242,46 +237,54 @@ const TimeSelector = ({ onTimeSelect, pricePerHour }) => {
 
           {/* Summary */}
           {startDate && startTime && !error && (
-            <div className="pt-6 border-t border-dark-border space-y-4">
-              <h3 className="text-lg font-semibold text-silver-light mb-3">Booking Summary</h3>
+            <div className="pt-6 border-t-2 border-dark-border space-y-4">
+              <h3 className="text-xl font-bold text-silver-light mb-4">Booking Summary</h3>
               
-              <div className="bg-dark-bg rounded-lg p-4 space-y-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-2">
-                    <Calendar className="w-4 h-4 text-silver-dark mt-0.5" />
+              <div className="bg-dark-bg rounded-lg p-5 space-y-4 border-2 border-dark-border">
+                <div className="flex items-start justify-between pb-3 border-b border-dark-border">
+                  <div className="flex items-start space-x-3">
+                    <Calendar className="w-5 h-5 text-silver mt-1" />
                     <div>
-                      <p className="text-xs text-silver-dark">Start Date & Time</p>
-                      <p className="text-silver-light font-medium">
+                      <p className="text-xs text-silver-dark uppercase tracking-wide mb-1">Start Date</p>
+                      <p className="text-silver-light font-semibold text-lg">
                         {formatDisplayDate(startDate)}
                       </p>
-                      <p className="text-silver-light font-medium">
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start justify-between pb-3 border-b border-dark-border">
+                  <div className="flex items-start space-x-3">
+                    <Clock className="w-5 h-5 text-silver mt-1" />
+                    <div>
+                      <p className="text-xs text-silver-dark uppercase tracking-wide mb-1">Start Time</p>
+                      <p className="text-silver-light font-semibold text-lg">
                         {formatDisplayTime(startTime)}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-dark-border">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="w-4 h-4 text-silver-dark" />
-                    <span className="text-silver-dark text-sm">Duration</span>
-                  </div>
-                  <span className="text-silver-light font-medium">
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-silver">Duration</span>
+                  <span className="text-silver-light font-bold text-lg">
                     {duration} hour{duration > 1 ? 's' : ''}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-silver-dark text-sm">Rate per Hour</span>
-                  <span className="text-silver-light font-medium">₹{pricePerHour}</span>
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-silver">Rate per Hour</span>
+                  <span className="text-silver-light font-bold text-lg">₹{pricePerHour}</span>
                 </div>
               </div>
 
-              <div className="bg-silver/10 rounded-lg p-4 flex items-center justify-between">
-                <span className="text-silver font-semibold text-lg">Total Cost:</span>
-                <span className="text-3xl font-bold text-silver-light">
-                  ₹{duration * pricePerHour}
-                </span>
+              <div className="bg-gradient-to-r from-silver/20 to-silver/10 rounded-lg p-6 border-2 border-silver/30">
+                <div className="flex items-center justify-between">
+                  <span className="text-silver-light font-bold text-xl">Total Cost:</span>
+                  <span className="text-4xl font-bold text-silver-light">
+                    ₹{duration * pricePerHour}
+                  </span>
+                </div>
               </div>
             </div>
           )}
