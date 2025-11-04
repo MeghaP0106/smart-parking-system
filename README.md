@@ -219,6 +219,7 @@ Open 3 terminal windows:
 
 ```bash
 cd backend
+npm run seed
 npm run dev
 ```
 
